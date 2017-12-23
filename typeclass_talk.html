@@ -22,14 +22,34 @@
 class: center, middle
 
 
-### Intro to Typeclasses
-# From S to F
+# Intro to Typeclasses
+### From S to F
+
+---
 
 # In this talk
+
+---
+
+# In this talk
+
+---
+
+# In this talk
+An overview of what typeclasses are and why you should care about them.
+
+---
+
+# In this talk
+An overview of what typeclasses are and why you should care about them.
+
+A whirl-wind tour of the following typeclasses
 - Semigroup
 - Monoid
 - Functor
 - Foldable
+
+---
 
 # Followup
 - Applicative
@@ -37,31 +57,99 @@ class: center, middle
 - Monad
 - Traversable
 
+---
+
+# Haskell Typeclasses
+
+---
 
 # Haskell Typeclasses
 - Allow you define behavours with (hopefully) a set of well-reasoned laws that instances must follow.
-- A bit like interfaces in C# and Java, or implicits in Scala, but even better.
-- You can define typeclasses on types you didn't write and vice-versa.
 
-- Look like this
-```
+---
+
+# Haskell Typeclasses
+- Allow you define behavours with (hopefully) a set of well-reasoned laws that instances must follow.
+- A bit like interfaces in C# and Java, or implicits and traits in Scala, but even better.
+
+---
+
+# Haskell Typeclasses
+- Allow you define behavours with (hopefully) a set of well-reasoned laws that instances must follow.
+- A bit like interfaces in C# and Java, or implicits and traits in Scala, but even better.
+- You can define typeclasses on types you didn't write and vice-versa. Try doing that in Java!
+
+---
+
+## Examples
+```haskell
 class Foo t where
   foo :: a -> b
 ```
 
-- Are defined for types like this
+---
+
+## Examples
+```haskell
+class Foo t where
+  foo :: a -> b
 ```
+```haskell
 instance Foo Int where
   foo a b = a + b
 ```
 
-- And used like this
+---
+
+## Examples
+```haskell
+class Foo t where
+  foo :: a -> b
 ```
+```haskell
+instance Foo Int where
+  foo a b = a + b
+```
+```haskell
 myFoo :: Foo f => f -> f -> f
 myFoo a b = foo a b
 ```
 
-- You restrict what kinds of types can have instances with typeclass restrictions.
+---
+
+## Examples
+```haskell
+class Foo t where
+  foo :: a -> b
+```
+```haskell
+instance Foo Int where
+  foo a b = a + b
+```
+```haskell
+myFoo :: Foo f => f -> f -> f
+myFoo a b = foo a b
+```
+
+Compare too similar mechanisms in Java and Scala(z).
+
+```java
+public interface Appendable {
+  Appendable append(char c);
+}
+public class Foo impliments Appendable { ... }
+```
+```scala
+trait Semigroup[S] {
+  append(s1: S, s2: => S): S
+}
+implicit def FooSemigroup: Semigroup[Foo] = semigroup((a, b) => ???)
+```
+
+---
+
+- You can restrict what types can have instances with typeclass
+restrictions and kinds.
 - For extra kicks you can even define function implementions in typeclasses.
 ```
 -- t Must be of kind * -> *, container types often have this kind.
@@ -84,11 +172,12 @@ instance Bar Maybe where
 - Video: https://www.youtube.com/watch?v=2EdQFCP5mZ8
 - Slides: https://github.com/qfpl/typeclass-the-ultimate-ad-hoc/blob/master/slides.pdf
 
+---
 
+class: center, middle
+### Now that I have (briefly) covered what a typeclass is, let's look at some common cases and what they can be used for.
 
-# Now that I have (briefly) covered what a typeclass is, let's look at some common cases and what they can be used for.
-
-
+---
 
 # Semigroup
 
@@ -102,6 +191,8 @@ What is a semigroup?
 class Semigroup a where
   (<>) :: a -> a -> a
 ```
+
+---
 
 # Semigroup laws
 The haskell class definition of a semigroup well and good.
@@ -123,8 +214,10 @@ a <> (b <> c) === (a <> b) <> c === a <> b <> c
 ```
 
 The above instance is not,
-2 <> (3 <> 4) => 2 <> 0 => Divide by 0 exception
-(2 <> 3) <> 4 => 0 <> 4 => 0
+```
+2 <> (3 <> 4)   =>   2 <> 0   =>   Divide by 0 exception
+(2 <> 3) <> 4   =>   0 <> 4   =>   0
+```
 
 Sadly Haskell doesn't have a built in way of enforcing these laws, but that
 doesn't mean we have to give up all hope. We can write tests that check that the

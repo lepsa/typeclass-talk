@@ -32,10 +32,6 @@ class: center, middle
 ---
 
 # In this talk
-
----
-
-# In this talk
 An overview of what typeclasses are and why you should care about them.
 
 ---
@@ -167,7 +163,7 @@ instance Bar Maybe where
     foo Nothing _  = Nothing
 ```
 
-- More in depth description of typeclasses are and how they work:
+- More in depth description of what typeclasses are and how they work:
     George Wilson's talk at Compose Conf 2017. Type Class: The Ultimate Ad Hoc
 - Video: https://www.youtube.com/watch?v=2EdQFCP5mZ8
 - Slides: https://github.com/qfpl/typeclass-the-ultimate-ad-hoc/blob/master/slides.pdf
@@ -273,7 +269,7 @@ Non-Example: NonEmpty, the non-empty list.
 data NonEmpty a = a :| [a]
 ```
 
-So NonEmpty can be a Semigroup, but it cannot be a Monoid. The stronger the type
+So NonEmpty can be a Semigroup, but it cannot be a Monoid. The stronger the typeclass
 is, the more you can do with it, but your available instances begin to dwindle.
 
 
@@ -281,15 +277,15 @@ is, the more you can do with it, but your available instances begin to dwindle.
 # Foldable
 Foldable types offer functions that allow you to run a function over the values, collecting the results.
 The two basic folds that all others are built from are foldl and foldr.
-foldl can be thought of as sumation or being a bit like a for-loop. foldr tends
+foldl can be thought of as summation or being a bit like a for-loop. foldr tends
 to be better thought of as being a type constructor replacing function, but both
 work for either case.
 
 class Foldable t where
-  foldMap :: Monoid m => (a -> m) -> t a -> m
   foldl :: (a -> b -> a) -> a -> t b -> a
   foldr :: (a -> b -> b) -> b -> t a -> b
-
+  -- Some others
+  foldMap :: Monoid m => (a -> m) -> t a -> m
 -- TODO, words and more words.
 
 
@@ -330,7 +326,7 @@ instance Functor (Either a) where
     fmap f (Right y) = Right (f y)
 
 -- Bonus for those who know Monad.
-instance Function IO where
+instance Functor IO where
   fmap f m = m >>= pure . f
 ```
 
@@ -341,8 +337,8 @@ fmap (f . g) == fmap f . fmap g
 So, what do these laws mean in practice?
 Well, if I run the identity function (\x -> x) over the elements of something,
 I should get the same values back.
-And if I run one function, over the structure, then another it should be the
-same, as doing both at the same time per element. This is basically the function 
+And if I run one function over the structure, then another it should be the
+same as doing both at the same time per element. This is basically the function 
 composition law, but now we are applying it to values in a context.
 
 
@@ -364,7 +360,7 @@ sumValues []     = 0
 sumValues (x:xs) = x + sumValues xs
 
 app :: [Int] -> Int
-app l = myFancyCounter (+ 1)
+app l = myFancyCounter l (+ 1)
 
 And it works well, because I wrote it. But when you feed it really big lists it can take a while to run.
 You talk to your friend and they say that haskell lists are actually linked

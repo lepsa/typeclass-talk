@@ -14,6 +14,21 @@
         font-weight: normal;
       }
       .remark-code, .remark-inline-code { font-family: 'Ubuntu Mono'; }
+      /* Two-column layout */
+      .left-column {
+        color: #777;
+        width: 20%;
+        height: 92%;
+        float: left;
+      }
+        .left-column h2:last-of-type, .left-column h3:last-child {
+          color: #000;
+        }
+      .right-column {
+        width: 75%;
+        float: right;
+        padding-top: 1em;
+      }
     </style>
   </head>
   <body>
@@ -59,33 +74,56 @@ A whirl-wind tour of the following typeclasses
 
 ---
 
-# Haskell Typeclasses
-- Allow you define behavours with (hopefully) a set of well-reasoned laws that instances must follow.
+.left-column[
+  # Typeclass
+]
+.right-column[
+Allow you define behavours with (hopefully) a set of well-reasoned laws that instances must follow.
+]
+---
+
+.left-column[
+  # Typeclass
+]
+.right-column[
+Allow you define behavours with (hopefully) a set of well-reasoned laws that instances must follow.
+
+A bit like interfaces in C# and Java, or implicits and traits in Scala, but even better.
+]
 
 ---
 
-# Haskell Typeclasses
-- Allow you define behavours with (hopefully) a set of well-reasoned laws that instances must follow.
-- A bit like interfaces in C# and Java, or implicits and traits in Scala, but even better.
+.left-column[
+  # Typeclass
+]
+.right-column[
+Allow you define behavours with (hopefully) a set of well-reasoned laws that instances must follow.
+
+A bit like interfaces in C# and Java, or implicits and traits in Scala, but even better.
+
+You can define typeclasses on types you didn't write and vice-versa. Try doing that in Java!
+]
 
 ---
 
-# Haskell Typeclasses
-- Allow you define behavours with (hopefully) a set of well-reasoned laws that instances must follow.
-- A bit like interfaces in C# and Java, or implicits and traits in Scala, but even better.
-- You can define typeclasses on types you didn't write and vice-versa. Try doing that in Java!
-
----
-
-## Examples
+.left-column[
+ # Typeclass
+ ## Examples
+]
+.right-column[
 ```haskell
 class Foo t where
   foo :: a -> b
 ```
+]
 
 ---
 
-## Examples
+.left-column[
+ # Typeclass
+ ## Examples
+]
+.right-column[
 ```haskell
 class Foo t where
   foo :: a -> b
@@ -94,10 +132,15 @@ class Foo t where
 instance Foo Int where
   foo a b = a + b
 ```
+]
 
 ---
 
-## Examples
+.left-column[
+ # Typeclass
+ ## Examples
+]
+.right-column[
 ```haskell
 class Foo t where
   foo :: a -> b
@@ -110,10 +153,15 @@ instance Foo Int where
 myFoo :: Foo f => f -> f -> f
 myFoo a b = foo a b
 ```
+]
 
 ---
 
-## Examples
+.left-column[
+ # Typeclass
+ ## Examples
+]
+.right-column[
 ```haskell
 class Foo t where
   foo :: a -> b
@@ -139,34 +187,54 @@ public class Foo impliments Appendable { ... }
 trait Semigroup[S] {
   append(s1: S, s2: => S): S
 }
-implicit def FooSemigroup: Semigroup[Foo] = semigroup((a, b) => ???)
+implicit def FooSemigroup: Semigroup[Foo] =
+  semigroup((a, b) => ???)
 ```
+]
 
 ---
 
-- You can restrict what types can have instances with typeclass
+.left-column[
+ # Typeclass
+ ## Examples
+ ## Features
+]
+.right-column[
+You can restrict what types can have instances with typeclass
 restrictions and kinds.
-- For extra kicks you can even define function implementions in typeclasses.
-```
+
+For extra kicks you can even define function implementions in typeclasses.
+
+```haskell
 -- t Must be of kind * -> *, container types often have this kind.
 class Bar t where
   foo :: t a -> (a -> t b) -> t b
   bar :: t a -> t b -> t b
   bar a b = foo a $ \_ -> b
 
-```
-
--- With the above Bar snipit, I only have to define `foo` and I get `bar` for free from the definition of Bar
-```
 instance Bar Maybe where
     foo (Just a) f = Just $ f a
     foo Nothing _  = Nothing
 ```
+]
 
-- More in depth description of what typeclasses are and how they work:
-    George Wilson's talk at Compose Conf 2017. Type Class: The Ultimate Ad Hoc
-- Video: https://www.youtube.com/watch?v=2EdQFCP5mZ8
-- Slides: https://github.com/qfpl/typeclass-the-ultimate-ad-hoc/blob/master/slides.pdf
+---
+
+.left-column[
+ # Typeclass
+ ## Examples
+ ## Features
+ ## Further Reading
+]
+.right-column[
+##George Wilson's talk at Compose Conf 2017.
+
+###Type Class: The Ultimate Ad Hoc
+
+**Talk** youtube.com/watch?v=2EdQFCP5mZ8
+
+**Slides** github.com/qfpl/typeclass-the-ultimate-ad-hoc/blob/master/slides.pdf
+]
 
 ---
 

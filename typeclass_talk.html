@@ -17,15 +17,15 @@
       /* Two-column layout */
       .left-column {
         color: #777;
-        width: 20%;
+        width: 25%;
         height: 92%;
         float: left;
       }
-        .left-column h2:last-of-type, .left-column h3:last-child {
+      .left-column h2:last-of-type, .left-column h3:last-child {
           color: #000;
         }
       .right-column {
-        width: 75%;
+        width: 70%;
         float: right;
         padding-top: 1em;
       }
@@ -36,22 +36,24 @@
 
 class: center, middle
 
-
 # Intro to Typeclasses
 ### From S to F
 
 ---
 
+.left-column[
 # In this talk
-
----
-
-# In this talk
+]
+.right-column[
 An overview of what typeclasses are and why you should care about them.
+]
 
 ---
 
+.left-column[
 # In this talk
+]
+.right-column[
 An overview of what typeclasses are and why you should care about them.
 
 A whirl-wind tour of the following typeclasses
@@ -59,6 +61,7 @@ A whirl-wind tour of the following typeclasses
 - Monoid
 - Functor
 - Foldable
+]
 
 ---
 
@@ -70,6 +73,7 @@ A whirl-wind tour of the following typeclasses
 
 ---
 
+class: center, middle
 # Haskell Typeclasses
 
 ---
@@ -127,8 +131,7 @@ class Foo t where
 ```haskell
 class Foo t where
   foo :: a -> b
-```
-```haskell
+
 instance Foo Int where
   foo a b = a + b
 ```
@@ -144,14 +147,12 @@ instance Foo Int where
 ```haskell
 class Foo t where
   foo :: a -> b
-```
-```haskell
+
 instance Foo Int where
   foo a b = a + b
-```
-```haskell
-myFoo :: Foo f => f -> f -> f
-myFoo a b = foo a b
+
+myFoo :: Foo f => f -> f -> f -> f
+myFoo a b c = foo a $ foo b c 
 ```
 ]
 
@@ -165,14 +166,12 @@ myFoo a b = foo a b
 ```haskell
 class Foo t where
   foo :: a -> b
-```
-```haskell
+
 instance Foo Int where
   foo a b = a + b
-```
-```haskell
-myFoo :: Foo f => f -> f -> f
-myFoo a b = foo a b
+
+myFoo :: Foo f => f -> f -> f -> f
+myFoo a b c = foo a $ foo b c 
 ```
 
 Compare too similar mechanisms in Java and Scala(z).
@@ -206,7 +205,8 @@ restrictions and kinds.
 For extra kicks you can even define function implementions in typeclasses.
 
 ```haskell
--- t Must be of kind * -> *, container types often have this kind.
+-- t must be of kind * -> *
+-- container types often have this kind.
 class Bar t where
   foo :: t a -> (a -> t b) -> t b
   bar :: t a -> t b -> t b
@@ -243,83 +243,324 @@ class: center, middle
 
 ---
 
+.left-column[
 # Semigroup
+]
+.right-column[
+Semigroup is about the simplest typeclass that you are going to be using on a daily basis.
+]
 
+---
+
+.left-column[
+# Semigroup
+]
+.right-column[
+Semigroup is about the simplest typeclass that you are going to be using on a daily basis.
+
+What is a semigroup?
+ - A set of values, which we call a type.
+ - A binary operation on that type.
+]
+
+---
+
+.left-column[
+# Semigroup
+]
+.right-column[
 Semigroup is about the simplest typeclass that you are going to be using on a daily basis.
 
 What is a semigroup?
  - A set of values, which we call a type.
  - A binary operation on that type.
 
-```
+```haskell
 class Semigroup a where
   (<>) :: a -> a -> a
 ```
+]
 
 ---
 
-# Semigroup laws
-The haskell class definition of a semigroup well and good.
+.left-column[
+# Semigroup
+## Laws
+]
+.right-column[
+The haskell class definition of a semigroup is all well and good.
+But it doesn't capture the most important part of the typeclass.
+]
+
+---
+
+.left-column[
+# Semigroup
+## Laws
+]
+.right-column[
+The haskell class definition of a semigroup is all well and good.
 But it doesn't capture the most important part of the typeclass.
 
 Because with that definition I can do something like this
-```
+```haskell
 instance Semigroup Integer where
   (<>) :: Integer -> Integer -> Integer
-  (<>) a b = quot a b -- Calculate the quotiant of a and b
+  -- Calculate the quotiant of a and b
+  (<>) a b = quot a b
+```
+]
+
+---
+
+.left-column[
+# Semigroup
+## Laws
+]
+.right-column[
+The haskell class definition of a semigroup is all well and good.
+But it doesn't capture the most important part of the typeclass.
+
+Because with that definition I can do something like this
+```haskell
+instance Semigroup Integer where
+  (<>) :: Integer -> Integer -> Integer
+  -- Calculate the quotiant of a and b
+  (<>) a b = quot a b
 ```
 
-And that will compile, but it doesn't give me something that I can
-reason about or abstract over.
+And that will compile, but there is an error lying in wait to catch us out.
+]
+
+---
+
+.left-column[
+# Semigroup
+## Laws
+]
+.right-column[
+What happens if I run this snippet?
+```haskell
+(2 <> 3) <> 4
+```
+]
+
+---
+
+.left-column[
+# Semigroup
+## Laws
+]
+.right-column[
+What happens if I run this snippet?
+```haskell
+(2 <> 3) <> 4  ==  0 <> 4  ==  0
+```
+]
+
+---
+
+.left-column[
+# Semigroup
+## Laws
+]
+.right-column[
+What happens if I run this snippet?
+```haskell
+(2 <> 3) <> 4  ==  0 <> 4  ==  0
+```
+
+What about this one?
+```haskell
+2 <> (3 <> 4)
+```
+]
+
+---
+
+.left-column[
+# Semigroup
+## Laws
+]
+.right-column[
+What happens if I run this snippet?
+```haskell
+(2 <> 3) <> 4  ==  0 <> 4  ==  0
+```
+
+What about this one?
+```haskell
+2 <> (3 <> 4)  ==  2 <> 0  ==  error "divide by zero"
+```
+]
+
+---
+
+.left-column[
+# Semigroup
+## Laws
+]
+.right-column[
+What happens if I run this snippet?
+```haskell
+(2 <> 3) <> 4  ==  0 <> 4  ==  0
+```
+
+What about this one?
+```haskell
+2 <> (3 <> 4)  ==  2 <> 0  ==  error "divide by zero"
+```
 
 So the one law that a semigroup must follow is the the function must be associative.
 ```
-a <> (b <> c) === (a <> b) <> c === a <> b <> c
+a <> (b <> c)  ==  (a <> b) <> c  ==  a <> b <> c
 ```
+]
 
-The above instance is not,
-```
-2 <> (3 <> 4)   =>   2 <> 0   =>   Divide by 0 exception
-(2 <> 3) <> 4   =>   0 <> 4   =>   0
-```
+---
 
-Sadly Haskell doesn't have a built in way of enforcing these laws, but that
-doesn't mean we have to give up all hope. We can write tests that check that the
-properties of the typeclass hold for arbitary given values. Other languages take
-this further and make you prove that your code is correct. Coq, Idris.
+.left-column[
+# Semigroup
+## Laws
+]
+.right-column[
+Sadly Haskell doesn't have a built in way of enforcing these laws.
 
-# Examples
-String and list concatenation. Most collection types will have semigroup instances. --TODO check if this is true
+That doesn't mean we have to give up all hope. We can write tests that check
+that the properties of the typeclass hold for arbitary given values.
+
+This usually goes by the name 'property testing'.
+
+Other languages take this further and make you prove that your code is
+correct.
+- Coq
+- Idris
+]
+
+---
+
+.left-column[
+# Semigroup
+## Laws
+## Examples
+]
+.right-column[
+String and list concatenation.
+
+Many collection types will have semigroup instances.
+  - Either
+  - Maybe
+  - Map
+
 Addition and multiplication over Integers. 
+
 Logical OR and AND over Booleans
+
 Getting the first or last value
+]
 
-Because we have assocativity from semigroups, we can use them in all sorts of
-places and know that we are going to get the same answer back. If I had a really
-long list of words that I wanted to count I could break the list into chunks,
-send those out to computers to count, and collect their answers. So long as I
-keep the the order of the responses, it doesn't matter in what order I combine
-the results in.
+---
+ 
+.left-column[
+# Semigroup
+## Laws
+## Examples
+]
+.right-column[
+Because semigroups are assocative, we can use them in all sorts of
+places and know that we are going to get the same answer back.
 
+If I have some lists of data that I wanted to join together, I could send
+subsets of my data out to computers to concatenate, and collect their answers.
+So long as I keep the order of the responses, it doesn't matter in what order
+I combine the results in.
 
+```haskell
+l   = [ [1, 2, 3]
+      , [4, 5, 6]
+      , [7, 8, 9]
+      , [10, 11, 12] 
+      ]
+
+l1  = [ [1, 2, 3]
+      , [4, 5, 6]
+      ]
+l1' = [1, 2, 3, 4, 5, 6]
+
+l2  = [ [7, 8, 9]
+      , [10, 11, 12]
+      ]
+l2' = [7, 8, 9, 10, 11, 12]
+
+l' = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+```
+]
+
+---
+
+.left-column[
 # Monoid
+]
+.right-column[
 Monoids are semigroups that have a value that encodes emptiness or nothingness.
+]
 
-They follow the same laws as semigroups
-Mathematically, all Monoids are semigroups and can be used where ever a semigroup is expected.
-Sadly this is not the case in haskell today, as of GHC 8.2.1 semigroup uses the Monoid version of <> (called mappend) by default, but is not a superclass of Monoid.
-(But let's pretend that they are for a moment)
+---
+
+.left-column[
+# Monoid
+]
+.right-column[
+Monoids are semigroups that have a value that encodes emptiness or nothingness.
 
 ```
 class Semigroup a => Monoid a where
-  mappend :: a -> a -> a
+  mappend :
+  : a -> a -> a
   mappend = (<>)
   mempty :: a
 ```
+]
 
-# Monoid laws
+---
+
+.left-column[
+# Monoid
+## Laws
+]
+.right-column[
+Mathematically, all Monoids are semigroups and can be used where ever a
+semigroup is expected. This means they follow the same laws as semigroups.
+]
+
+---
+
+.left-column[
+# Monoid
+# Laws
+]
+.right-column[
+Mathematically, all Monoids are semigroups and can be used where ever a
+semigroup is expected. This means they follow the same laws as semigroups.
+
+Sadly this is not the case in haskell today, as of GHC 8.2.1 semigroup uses the Monoid version of <> (called mappend) by default, but is not a superclass of Monoid.
+(But let's pretend that they are for a moment)
+]
+
+---
+
+]
+
+.left-column[
+  # Monoid
+  ## Laws
+]
+.right-column[
 Since monoids are semigroups, their append/concat function must be associative.
 But they also have this mempty value that can be used, so what laws does it follow?
+]
+
+---
 
 ```
 mempty <> a = a <> mempty = a

@@ -513,10 +513,9 @@ Monoids are semigroups that have a value that encodes emptiness or nothingness.
 .right-column[
 Monoids are semigroups that have a value that encodes emptiness or nothingness.
 
-```
+```haskell
 class Semigroup a => Monoid a where
-  mappend :
-  : a -> a -> a
+  mappend :: a -> a -> a
   mappend = (<>)
   mempty :: a
 ```
@@ -537,51 +536,167 @@ semigroup is expected. This means they follow the same laws as semigroups.
 
 .left-column[
 # Monoid
-# Laws
+## Laws
 ]
 .right-column[
 Mathematically, all Monoids are semigroups and can be used where ever a
 semigroup is expected. This means they follow the same laws as semigroups.
 
-Sadly this is not the case in haskell today, as of GHC 8.2.1 semigroup uses the Monoid version of <> (called mappend) by default, but is not a superclass of Monoid.
-(But let's pretend that they are for a moment)
+Sadly this is not the case in haskell today, as of GHC 8.2.1 semigroup uses the
+Monoid version of `<>` (called `mappend`) by default, and is not a superclass of Monoid.
+(But let's pretend that they are)
 ]
 
 ---
-
-]
 
 .left-column[
   # Monoid
   ## Laws
 ]
 .right-column[
-Since monoids are semigroups, their append/concat function must be associative.
-But they also have this mempty value that can be used, so what laws does it follow?
+Since monoids are semigroups, their append / concat function must be associative.
+But they also have this `mempty` value that can be used, so what laws does it follow?
 ]
 
 ---
 
-```
-mempty <> a = a <> mempty = a
-```
-So the function must, in addition to being associative, be communicative when called with mempty
+.left-column[
+  # Monoid
+  ## Laws
+]
+.right-column[
+Since monoids are semigroups, their append / concat function must be associative.
+But they also have this `mempty` value that can be used, so what laws does it follow?
 
-# Examples
+```haskell
+mempty <> a  ==  a <> mempty  ==  a
+```
+So the function must, in addition to being associative, have a commutative
+identity element, which we call `mempty`.
+]
+
+---
+
+.left-column[
+  # Monoid
+  ## Laws
+  ## Examples
+]
+.right-column[
 List forms a monoid with the empty list as its mempty values.
-"" is the mempty for string.
-Sum uses 0, and Product uses 1.
-
-Non-Example: NonEmpty, the non-empty list.
-`NonEmpty a`, as its name might suggest, doesn't encode an empty value, as it will always have some value `a` by definition.
+```haskell
+[] <> [1] <> [] <> [2, 3]  ==  [1, 2, 3]
 ```
+
+`""` is the mempty for string.
+```haskell
+"" <> "A" <> "" <> "BC"  ==  "ABC"
+```
+
+Sum uses 0, and Product uses 1.
+```haskell
+Sum 0 <> Sum 1 <> Sum 2 <> Sum 0  ==  Sum 3
+
+Product 1 <> Product 2 <> Product 3 <> Product 1
+  ==  Product 6
+```
+
+]
+
+---
+
+.left-column[
+  # Monoid
+  ## Laws
+  ## Examples
+]
+.right-column[
+  So what use is an empty element?
+]
+
+---
+
+.left-column[
+  # Monoid
+  ## Laws
+  ## Examples
+]
+.right-column[
+So what use is an empty element?
+
+Monoids are an excellent data structure to use when your computation has some
+  connotation of nothingness, or you need a base value that you can build up from.
+
+If I was trying to give you the result of a computation that might fail, I would probably use `Maybe`.
+
+Computations that return 0 or more results, such as database queries, often
+return data in lists.
+
+Both of these types are able to collect their results, while ignoring invalid or
+missing data.
+]
+
+---
+
+.left-column[
+  # Monoid
+  ## Laws
+  ## Examples
+  ## Non-Example
+]
+.right-column[
+**NonEmpty** the non-empty list.
+]
+
+---
+
+.left-column[
+  # Monoid
+  ## Laws
+  ## Examples
+  ## Non-Example
+]
+.right-column[
+**NonEmpty** the non-empty list.
+
+As its name might suggest, doesn't encode an empty value, as it will always
+have some value by definition.
+```haskell
+data NonEmpty a = a :| [a]
+```
+]
+
+---
+
+.left-column[
+  # Monoid
+  ## Laws
+  ## Examples
+  ## Non-Example
+]
+.right-column[
+**NonEmpty** the non-empty list.
+
+As its name might suggest, doesn't encode an empty value, as it will always
+have some value by definition.
+```haskell
 data NonEmpty a = a :| [a]
 ```
 
-So NonEmpty can be a Semigroup, but it cannot be a Monoid. The stronger the typeclass
-is, the more you can do with it, but your available instances begin to dwindle.
+`NonEmpty` can be a Semigroup, but it cannot be a Monoid.
 
+```haskell
+instance Semigroup (NonEmpty a) where
+  (a :| as) <> (b :| bs) = a :| (as <> (b : bs))
 
+instance Monoid (NonEmpty a) where
+  mempty = ???
+```
+
+The stronger the typeclass is, the more you can do with it, but your available instances begin to dwindle.
+]
+
+---
 
 # Foldable
 Foldable types offer functions that allow you to run a function over the values, collecting the results.

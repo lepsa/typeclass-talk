@@ -454,9 +454,12 @@ Many collection types will have semigroup instances.
 
 Addition and multiplication over Integers. 
 
-Logical OR and AND over Booleans
+Logical OR and AND over Booleans.
 
-Getting the first or last value
+Getting the first or last value.
+
+Functions of type `a -> a`
+
 ]
 
 ---
@@ -642,6 +645,19 @@ missing data.
   # Monoid
   ## Laws
   ## Examples
+]
+.right-column[
+**Endo**, the Haskell type for Endomorphisms (category theory functions of
+type `a -> a`)
+
+]
+
+---
+
+.left-column[
+  # Monoid
+  ## Laws
+  ## Examples
   ## Non-Example
 ]
 .right-column[
@@ -698,41 +714,124 @@ The stronger the typeclass is, the more you can do with it, but your available i
 
 ---
 
+.left-column[
 # Foldable
-Foldable types offer functions that allow you to run a function over the values, collecting the results.
-The two basic folds that all others are built from are foldl and foldr.
-foldl can be thought of as summation or being a bit like a for-loop. foldr tends
+]
+.right-column[
+Foldable types offer functions that allow you to run a function over each value
+in order, collecting the results.
+]
+
+---
+
+.left-column[
+# Foldable
+]
+.right-column[
+Foldable types offer functions that allow you to run a function over each value
+in order, collecting the results.
+
+The two basic folds that all others are built from are `foldl` and `foldr`.
+
+`foldl` can be thought of as summation or being a bit like a for-loop. `foldr` tends
 to be better thought of as being a type constructor replacing function, but both
 work for either case.
 
+```haskell
 class Foldable t where
   foldl :: (a -> b -> a) -> a -> t b -> a
   foldr :: (a -> b -> b) -> b -> t a -> b
-  -- Some others
+
+  fold :: Monoid m => t m -> m
+
   foldMap :: Monoid m => (a -> m) -> t a -> m
--- TODO, words and more words.
+```
+]
 
+---
 
+.left-column[
+#Foldable
+##Laws
+]
+.right-column[
+  Foldable comes with a set of laws that mostly deal with ensuring the order in
+  which function application occurs.
+  
+  These laws are a little beyond the scope of this talk, but in essence `foldl` and `foldr` must run in opposite directions.
 
+```haskell
+l = [1, 2, 3]
+f = (+)
+
+foldl f z l == ((z + 1) + 2) + 3
+foldr f z l == 1 + (2 + (3 + z))
+```
+]
+
+---
+
+.left-column[
+#Foldable
+##Laws
+##Examples
+]
+.right-column[
+[a] and NonEmpty are prime examples of a Foldable data structures, but not all
+Foldables have to store multiple or varying amounts of values.
+
+The folds for Maybe will return either z or the result of the function.
+
+(a, b) will fold over the second value, without looking at the first.
+
+Sum, Product, First, Last, and other similar types are all Foldable, operating
+on their stored value.
+]
+
+---
+
+.left-column[
 # Functor
+]
+.right-column[
+Functors are an interesting and fundemental part of haskell programming.
+They allow you to apply a function over values that have some context.
+]
+
+---
+
+.left-column[
+# Functor
+]
+.right-column[
 Functors are an interesting and fundemental part of haskell programming.
 They allow you to apply a function over values that have some context.
 
-For example, how would you apply a funtion to every item in a list?
-What about to an optional value?
-Trees of values?
+How would you apply a funtion to every item in a list?<br/>
+What about to an optional value?<br/>
+Trees of values?<br/>
 What about an IO action?
 
-For the above actions you would probably end up with a function with a type of
-(a -> b) -> [] a    -> [] b
-(a -> b) -> Maybe a -> Maybe b
-(a -> b) -> Tree a  -> Tree b
-(a -> b) -> IO a    -> IO b
+For the above actions you would probably end up with functions with types of
+```haskell
+applyList  :: (a -> b) -> [] a    -> [] b
+applyMaybe :: (a -> b) -> Maybe a -> Maybe b
+applyTree  :: (a -> b) -> Tree a  -> Tree b
+applyIO    :: (a -> b) -> IO a    -> IO b
+```
 
 These all look very similar, all that we are doing is changing the data type holding our values.
 
 So, how do we abstract over datatypes? If you thought typeclasses then congrats! You have been paying attention.
 
+]
+
+---
+
+.left-column[
+#Functor
+]
+.right-column[
 This is Functor
 ```
 class Functor f where
@@ -753,7 +852,15 @@ instance Functor (Either a) where
 instance Functor IO where
   fmap f m = m >>= pure . f
 ```
+]
 
+---
+
+.left-column[
+#Functor
+##Laws
+]
+.right-column[
 Like all good typeclasses, Functor must have some laws that we can use.
 fmap id == id
 fmap (f . g) == fmap f . fmap g
@@ -764,7 +871,29 @@ I should get the same values back.
 And if I run one function over the structure, then another it should be the
 same as doing both at the same time per element. This is basically the function 
 composition law, but now we are applying it to values in a context.
+]
 
+---
+
+.left-column[
+#Functor
+##Laws
+##Examples
+]
+.right-column[
+In haskell today, Set is not a functor, although you might want it to be.
+This is because many of the Set functions require Ord instances for the
+held values. Functor doesn't allow this, as you must be able to return any
+value. To work around this, Data.Set supplies a function `map` that has these
+restrictions that otherwise works just like `fmap`.
+
+An interesting thing about Functors is that they do not have to be structure
+preserving, but often are. The above pseudo-functor for Set will drop duplicate
+values, possibly resulting in a smaller Set everytime you run `map`. This is
+called a forgetful functor.
+]
+
+---
 
 # So now that I have these fancy classes, what benefit do they give me?
 Abstracting over types for less mental load and easier refactoring.

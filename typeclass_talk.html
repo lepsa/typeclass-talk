@@ -758,7 +758,9 @@ class Foldable t where
   Foldable comes with a set of laws that mostly deal with ensuring the order in
   which function application occurs.
   
-  These laws are a little beyond the scope of this talk, but in essence `foldl` and `foldr` must run in opposite directions.
+  Some of the concepts used in these laws are a little beyond the scope of this talk.
+  
+  An intuitive understaning of `foldl` and `foldr` is that they must run in opposite directions.
 
 ```haskell
 l = [1, 2, 3]
@@ -811,8 +813,16 @@ How would you apply a funtion to every item in a list?<br/>
 What about to an optional value?<br/>
 Trees of values?<br/>
 What about an IO action?
+]
 
-For the above actions you would probably end up with functions with types of
+---
+
+.left-column[
+
+#Functor
+]
+.right-column[
+For each of these types you would probably end up with functions with types of
 ```haskell
 applyList  :: (a -> b) -> [] a    -> [] b
 applyMaybe :: (a -> b) -> Maybe a -> Maybe b
@@ -833,13 +843,13 @@ So, how do we abstract over datatypes? If you thought typeclasses then congrats!
 ]
 .right-column[
 This is Functor
-```
+```haskell
 class Functor f where
   fmap :: (a -> b) -> f a -> f b
 ```
 
 And this is what a functor instance looks like.
-```
+```haskell
 class Functor [] where
   fmap _ []     = []
   fmap f (x:xs) = f x : fmap f xs
@@ -862,15 +872,20 @@ instance Functor IO where
 ]
 .right-column[
 Like all good typeclasses, Functor must have some laws that we can use.
+```
 fmap id == id
+
 fmap (f . g) == fmap f . fmap g
+```
 
 So, what do these laws mean in practice?
-Well, if I run the identity function (\x -> x) over the elements of something,
+Well, if I run the identity function `\x -> x` over the elements of something,
 I should get the same values back.
-And if I run one function over the structure, then another it should be the
-same as doing both at the same time per element. This is basically the function 
-composition law, but now we are applying it to values in a context.
+
+Additionally, if I run one function over the structure, then another it should be the
+same as doing both at the same time per element.
+
+This is basically the function composition law, but now we are applying it to values in a context.
 ]
 
 ---
@@ -881,10 +896,24 @@ composition law, but now we are applying it to values in a context.
 ##Examples
 ]
 .right-column[
-In haskell today, Set is not a functor, although you might want it to be.
-This is because many of the Set functions require Ord instances for the
-held values. Functor doesn't allow this, as you must be able to return any
-value. To work around this, Data.Set supplies a function `map` that has these
+]
+
+---
+
+.left-column[
+#Functor
+##Laws
+##Examples
+##Pseudo Example
+]
+.right-column[
+In haskell today, Data.Set from containers is not a functor, although you might want it to be.
+
+This is due to the implimentation of Set and its related functions requiring Ord instances for the
+held type. Functor doesn't allow this, as you must be able to return any
+value.
+
+To work around this, Data.Set supplies a function `map` that has these
 restrictions that otherwise works just like `fmap`.
 
 An interesting thing about Functors is that they do not have to be structure

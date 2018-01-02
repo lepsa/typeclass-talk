@@ -105,7 +105,7 @@ Allow you define behavours with (hopefully) a set of well-reasoned laws that ins
 
 A bit like interfaces in C# and Java, or implicits and traits in Scala, but even better.
 
-You can define typeclasses on types you didn't write and vice-versa. Try doing that in Java!
+You can define typeclasses on types you didn't write and vice-versa.
 ]
 
 ---
@@ -116,8 +116,9 @@ You can define typeclasses on types you didn't write and vice-versa. Try doing t
 ]
 .right-column[
 ```haskell
-class Foo t where
-  foo :: a -> b
+class Eq a where
+  (==) :: a -> a -> Bool
+  (/=) :: a -> a -> Bool
 ```
 ]
 
@@ -129,11 +130,14 @@ class Foo t where
 ]
 .right-column[
 ```haskell
-class Foo t where
-  foo :: a -> b
+class Eq a where
+  (==) :: a -> a -> Bool
+  (/=) :: a -> a -> Bool
 
-instance Foo Int where
-  foo a b = a + b
+instance Eq Bool where
+  (==) True  True  = True
+  (==) False False = True
+  (==) _     _     = False
 ```
 ]
 
@@ -145,14 +149,19 @@ instance Foo Int where
 ]
 .right-column[
 ```haskell
-class Foo t where
-  foo :: a -> b
+class Eq a where
+  (==) :: a -> a -> Bool
+  (/=) :: a -> a -> Bool
 
-instance Foo Int where
-  foo a b = a + b
+instance Eq Bool where
+  (==) True  True  = True
+  (==) False False = True
+  (==) _     _     = False
 
-myFoo :: Foo f => f -> f -> f -> f
-myFoo a b c = foo a $ foo b c 
+equals3 :: Eq a => a -> a -> a -> Bool
+equals3 a b c = a == b && b == c
+
+(&&) :: Bool -> Bool -> Bool
 ```
 ]
 
@@ -164,30 +173,35 @@ myFoo a b c = foo a $ foo b c
 ]
 .right-column[
 ```haskell
-class Foo t where
-  foo :: a -> b
+class Eq a where
+  (==) :: a -> a -> Bool
+  (/=) :: a -> a -> Bool
 
-instance Foo Int where
-  foo a b = a + b
+instance Eq Bool where
+  (==) True  True  = True
+  (==) False False = True
+  (==) _     _     = False
 
-myFoo :: Foo f => f -> f -> f -> f
-myFoo a b c = foo a $ foo b c 
+equals3 :: Eq a => a -> a -> a -> Bool
+equals3 a b c = a == b && b == c
+
+(&&) :: Bool -> Bool -> Bool
 ```
 
 Compare too similar mechanisms in Java and Scala(z).
 
 ```java
-public interface Appendable {
-  Appendable append(char c);
+public interface Comparable<T> {
+  int compareTo(T o);
 }
-public class Foo impliments Appendable { ... }
+public class Foo impliments Comparable<T> { ... }
 ```
 ```scala
-trait Semigroup[S] {
-  append(s1: S, s2: => S): S
+trait Equal[A] {
+  def equal(a1: A, a2: A): Boolean
 }
-implicit def FooSemigroup: Semigroup[Foo] =
-  semigroup((a, b) => ???)
+implicit def FooEqual: Equal[Foo] =
+  equal((a, b) => ???)
 ```
 ]
 

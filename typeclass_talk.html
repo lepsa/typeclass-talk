@@ -241,7 +241,7 @@ instance Bar Maybe where
  ## Further Reading
 ]
 .right-column[
-##George Wilson's talk at Compose Conf 2017.
+##George Wilson's talk at Compose Conf 2017
 
 ###Type Class: The Ultimate Ad Hoc
 
@@ -461,23 +461,67 @@ correct.
 .right-column[
 String and list concatenation.
 
-Many collection types will have semigroup instances.
-  - Either
-  - Maybe
-  - Map
-
 Addition and multiplication over Integers. 
 
 Logical OR and AND over Booleans.
-
-Getting the first or last value.
-
-Functions of type `a -> a`
-
 ]
 
 ---
- 
+
+.left-column[
+# Semigroup
+## Laws
+## Examples
+]
+.right-column[
+Many collection types will have semigroup instances.
+
+```haskell
+data Either e a = Left e | Right a
+instance Semigroup (Either a b) where
+  Left _ <> b = b
+  a      <> _ = a
+
+data Maybe a = Nothing | Just a
+instance Semigroup a => Semigroup (Maybe a) where
+  Nothing <> b       = b
+  a       <> Nothing = a
+  Just a  <> Just b  = Just (a <> b)
+
+data Map k a = Bin Int k a (Map k a) (Map k a) | Tip
+instance Ord k => Semigroup (Map k v) where
+  (<>) = union
+
+instance Semigroup (Vector a) where
+  (<>) = (++) -- From Vector
+```
+]
+
+---
+
+.left-column[
+# Semigroup
+## Laws
+## Examples
+]
+.right-column[
+Getting the first or last value.
+
+```haskell
+newtype First a = First { getFirst :: Maybe a }
+instance Semigroup (First a) where
+  First Nothing <> b = b
+  a             <> _ = a
+
+newtype Last a = Last { getLast :: Maybe a }
+instance Semigroup (Last a) where
+  a <> Last Nothing = a
+  _ <> b            = b
+```
+]
+
+---
+
 .left-column[
 # Semigroup
 ## Laws
@@ -796,9 +840,6 @@ f = (+)
 foldl f z l == ((z + 1) + 2) + 3
 foldr f z l == 1 + (2 + (3 + z))
 ```
-
-Tony Morris - Explain List Folds to Yourself - BFPG 2013-04-23
-https://vimeo.com/64673035
 ]
 
 ---
@@ -818,6 +859,22 @@ The folds for Maybe will return either z or the result of the function.
 
 Sum, Product, First, Last, and other similar types are all Foldable, operating
 on their stored value.
+]
+
+---
+
+.left-column[
+#Foldable
+##Laws
+##Examples
+##Further Reading
+]
+.right-column[
+##Tony Morris' talk on folds
+
+### Explain List Folds to Yourself
+
+**Talk** vimeo.com/64673035
 ]
 
 ---

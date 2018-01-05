@@ -869,8 +869,6 @@ Foldables have to store multiple or varying amounts of values.
 
 The folds for Maybe will return either z or the result of the function.
 
-(a, b) will fold over the second value, without looking at the first.
-
 Sum, Product, First, Last, and other similar types are all Foldable, operating
 on their stored value.
 ]
@@ -1077,8 +1075,7 @@ restrictions that otherwise works just like `fmap`.
 
 An interesting thing about Functors is that they do not have to be structure
 preserving, but often are. The above pseudo-functor for Set will drop duplicate
-values, possibly resulting in a smaller Set everytime you run `map`. This is
-called a forgetful functor.
+values, possibly resulting in a smaller Set everytime you run `map`.
 ]
 
 ---
@@ -1234,7 +1231,6 @@ We can simplify this even further using another function from Foldable.
 myFancyCounter :: (Monoid m, Foldable f) => f m -> (m -> m) -> m
 myFancyCounter v f = foldMap f v
 ```
-]
 
 And that is the power of Typeclasses in practice.
 ]

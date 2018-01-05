@@ -461,9 +461,23 @@ correct.
 .right-column[
 String and list concatenation.
 
-Addition and multiplication over Integers. 
+```haskell
+[1, 2, 3] <> [4, 5] == [1, 2, 3, 4, 5]
+```
 
 Logical OR and AND over Booleans.
+```haskell
+newtype All a = All { getAll :: Bool }
+newtype Any a = Any { getAny :: Bool }
+
+All True <> All False  ==  All False
+All True <> All True   ==  All True
+
+Any False <> Any False  ==  Any False
+Any True <> Any False   ==  Any True
+```
+
+Addition and multiplication over Integers.
 ]
 
 ---

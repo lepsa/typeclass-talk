@@ -82,7 +82,7 @@ class: center, middle
   # Typeclass
 ]
 .right-column[
-Allow you define behaviours with (hopefully) a set of well-reasoned laws that instances must follow.
+Allow you define behavours with (hopefully) a set of well-reasoned laws that instances must follow.
 ]
 ---
 
@@ -90,7 +90,7 @@ Allow you define behaviours with (hopefully) a set of well-reasoned laws that in
   # Typeclass
 ]
 .right-column[
-Allow you define behaviours with (hopefully) a set of well-reasoned laws that instances must follow.
+Allow you define behavours with (hopefully) a set of well-reasoned laws that instances must follow.
 
 A bit like interfaces in C# and Java, or implicits and traits in Scala, but even better.
 ]
@@ -101,7 +101,7 @@ A bit like interfaces in C# and Java, or implicits and traits in Scala, but even
   # Typeclass
 ]
 .right-column[
-Allow you define behaviours with (hopefully) a set of well-reasoned laws that instances must follow.
+Allow you define behavours with (hopefully) a set of well-reasoned laws that instances must follow.
 
 A bit like interfaces in C# and Java, or implicits and traits in Scala, but even better.
 
@@ -339,7 +339,7 @@ Because with that definition I can do something like this
 ```haskell
 instance Semigroup Integer where
   (<>) :: Integer -> Integer -> Integer
-  -- Calculate the quotient of a and b
+  -- Calculate the quotiant of a and b
   (<>) a b = quot a b
 ```
 
@@ -528,7 +528,7 @@ instance Semigroup (Last a) where
 ## Examples
 ]
 .right-column[
-Because semigroups are associative, we can use them in all sorts of
+Because semigroups are assocative, we can use them in all sorts of
 places and know that we are going to get the same answer back.
 
 If I have some lists of data that I wanted to join together, I could send
@@ -845,7 +845,7 @@ class Foldable t where
   
   Some of the concepts used in these laws are a little beyond the scope of this talk.
   
-  An intuitive understanding of `foldl` and `foldr` is that they must run in opposite directions.
+  An intuitive understaning of `foldl` and `foldr` is that they must run in opposite directions.
 
 ```haskell
 l = [1, 2, 3]
@@ -897,7 +897,7 @@ on their stored value.
 # Functor
 ]
 .right-column[
-Functors are an interesting and fundamental part of haskell programming.
+Functors are an interesting and fundemental part of haskell programming.
 They allow you to apply a function over values that have some context.
 ]
 
@@ -907,10 +907,10 @@ They allow you to apply a function over values that have some context.
 # Functor
 ]
 .right-column[
-Functors are an interesting and fundamental part of haskell programming.
+Functors are an interesting and fundemental part of haskell programming.
 They allow you to apply a function over values that have some context.
 
-How would you apply a function to every item in a list?<br/>
+How would you apply a funtion to every item in a list?<br/>
 What about to an optional value?<br/>
 Trees of values?<br/>
 What about an IO action?
@@ -933,7 +933,7 @@ applyIO    :: (a -> b) -> IO a    -> IO b
 
 These all look very similar, all that we are doing is changing the data type holding our values.
 
-So, how do we abstract over data types? If you thought typeclasses then congrats! You have been paying attention.
+So, how do we abstract over datatypes? If you thought typeclasses then congrats! You have been paying attention.
 
 ]
 
@@ -1003,7 +1003,7 @@ This is basically the function composition law, but now we are applying it to va
 .right-column[
 As shown earlier [], Either, and IO are all relatively straight forward Functors.
 
-Much like the Foldable instances, Functor for Maybe, First, Last, Sum, Product will apply the function to the stored value, re-wrapping the result.
+Much like the Foldable instances, Functor for Maybe, First, Last, Sum, Product will apply the funtion to the stored value, rewrapping the result.
 ```haskell
 instance Functor Maybe where
   fmap _ Nothing = Nothing

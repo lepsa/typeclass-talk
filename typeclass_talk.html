@@ -493,7 +493,7 @@ instance Ord k => Semigroup (Map k v) where
   (<>) = union
 
 instance Semigroup (Vector a) where
-  (<>) = (++) -- From Vector
+  (<>) = (++) -- From Data.Vector
 ```
 ]
 
@@ -699,6 +699,20 @@ Product 1 <> Product 2 <> Product 3 <> Product 1
 ]
 .right-column[
   So what use is an empty element?
+]
+
+---
+
+.left-column[
+  # Monoid
+  ## Laws
+  ## Examples
+]
+.right-column[
+So what use is an empty element?
+
+Monoids are an excellent data structure to use when your computation has some
+  connotation of nothingness, or you need a base value that you can build up from.
 ]
 
 ---
@@ -933,6 +947,10 @@ This is Functor
 ```haskell
 class Functor f where
   fmap :: (a -> b) -> f a -> f b
+
+-- Infix version used everywhere
+(<$>) :: Functor f => (a -> b) -> f a -> f b
+(<$>) = fmap
 ```
 
 And this is what a functor instance looks like.
@@ -983,6 +1001,60 @@ This is basically the function composition law, but now we are applying it to va
 ##Examples
 ]
 .right-column[
+As shown earlier [], Either, and IO are all relatively straight forward Functors.
+
+Much like the Foldable instances, Functor for Maybe, First, Last, Sum, Product will apply the funtion to the stored value, rewrapping the result.
+```haskell
+instance Functor Maybe where
+  fmap _ Nothing = Nothing
+  fmap f (Just a) = Just $ f a
+
+-- You can swap out Sum for First, Last, Product, etc
+instance Functor Sum where
+  fmap f s = Sum {getSum = f $ getSum s}
+```
+
+NonEmpty's instance is very similar to the instance for [], so much so that we can use it.
+```haskell
+instance Functor NonEmpty where
+  fmap f (a :| as) = f a :| fmap f as
+
+```
+
+]
+
+---
+
+.left-column[
+#Functor
+##Laws
+##Examples
+]
+.right-column[
+A trivial application of Functor would be something like this.
+```haskell
+(+ 1) <$> [1, 2, 3]  ==  [2, 3, 4]
+```
+
+You can use functor to build functions.
+```haskell
+(+) <$> Just 1  ==  Just (+ 1)
+
+```
+
+You can even use it to apply functions with multiple params
+```haskell
+(&) :: a -> (a -> b) -> b
+
+f a b c = a + b + c
+(3 &) <$> (2 &) <$> plus3 <$> Just 1  ==  Just 6
+
+g a b c = a <> b <> c
+("2" &) <$> ("1" &) <$> g <$> ["A", "B", "C"]  ==
+  ["A12", "B12", "C12"]
+```
+
+There are nicer ways of doing this that I'll cover in another talk.
 ]
 
 ---
@@ -1011,12 +1083,29 @@ called a forgetful functor.
 
 ---
 
+class: center, middle
 # So now that I have these fancy classes, what benefit do they give me?
+
 Abstracting over types for less mental load and easier refactoring.
 
-For example, suppose that I had a function that took a list of numbers, did something
-to each value, and the summed everything up.
+---
 
+.left-column[
+# Refactoring
+]
+.right-column[
+Suppose that I had a function that took a list of numbers, did something to each value, and the summed everything up.
+]
+
+---
+
+.left-column[
+# Refactoring
+]
+.right-column[
+Suppose that I had a function that took a list of numbers, did something to each value, and the summed everything up.
+
+```haskell
 myFancyCounter :: [Int] -> (Int -> Int) -> Int
 myFancyCounter l f = sumValues $ applyFunction l f
 
@@ -1030,17 +1119,41 @@ sumValues (x:xs) = x + sumValues xs
 
 app :: [Int] -> Int
 app l = myFancyCounter l (+ 1)
+```
+]
 
-And it works well, because I wrote it. But when you feed it really big lists it can take a while to run.
+---
+
+.left-column[
+# Refactoring
+## Problems
+]
+.right-column[
+And it works well, because I wrote it.
+
+But when you feed it really big lists it can take a while to run.
+
+
 You talk to your friend and they say that haskell lists are actually linked
 lists and those are slow. You should use Vector instead, which is more like an
 array.
+
 So you begin the task of changing all those list annotations over to Vector, changing how you loop over the values.
 
 If this sounds slow, boring, and error prone you would be correct.
+]
 
+---
+
+.left-column[
+# Refactoring
+## Problems
+## Easy Wins
+]
+.right-column[
 In this case we can easily remove applyFunction, and replace it with a functor!
 
+```haskell
 myFancyCounter :: Functor f => f Int -> (Int -> Int) -> Int
 myFancyCounter v f = sumValues $ fmap f v
 
@@ -1049,11 +1162,25 @@ sumValues v = foldr (+) 0 v
 
 app :: Vector Int -> Int
 app v = myFancyCounter v (+ 1)
+```
+]
 
-But what if our values get too big for Int? So we move to Integer. But what if we no longer want to sum the values but get the product instead?
+---
+
+.left-column[
+# Refactoring
+## Problems
+## Easy Wins
+## Restrictions
+]
+.right-column[
+But what if our values get too big for Int? So we move to Integer. 
+
+What if we no longer want to sum the values but get the product instead?
 Now we need to remember if we used any special values anywhere and change those.
 
 If we change out the Integer type to be a Monoid we can capture all those requirements in one nice place.
+```haskell
 myFancyCounter :: (Monoid m, Functor f) => f m -> (m -> m) -> m
 myFancyCounter v f = sumValues $ fmap f v
 
@@ -1062,10 +1189,23 @@ sumValues v = foldr (<>) mempty v
 
 app :: Vector Sum -> Sum
 app v = myFancyCounter (+ 1) v
+```
+]
 
+---
 
+.left-column[
+# Refactoring
+## Problems
+## Easy Wins
+## Restrictions
+]
+.right-column[
 There is still that lingering Vector in sumValues. Since we are already using foldr we can easily change it to work on any Foldable type
-myFancyCounter :: (Monoid m, Foldable f, Functor f) => f m -> (m -> m) -> m
+
+```haskell
+myFancyCounter :: (Monoid m, Foldable f, Functor f) =>
+  f m -> (m -> m) -> m
 myFancyCounter v f = sumValues $ fmap f v
 
 sumValues :: (Foldable f, Monoid m) => f m -> m
@@ -1073,16 +1213,31 @@ sumValues v = foldr (<>) mempty v
 
 app :: Vector Sum -> Sum
 app v = myFancyCounter (+ 1) v
+```
 
 Now if we want to change the data type that our app uses, it is all in one place!
+]
 
-We can simplify this even further using some more functions from Foldable
+---
 
+.left-column[
+# Refactoring
+## Problems
+## Easy Wins
+## Restrictions
+## Follow the Types
+]
+.right-column[
+We can simplify this even further using another function from Foldable.
+
+```haskell
 myFancyCounter :: (Monoid m, Foldable f) => f m -> (m -> m) -> m
 myFancyCounter v f = foldMap f v
+```
+]
 
 And that is the power of Typeclasses in practice.
-
+]
     </textarea>
     <script src="remark-latest.min.js">
     </script>

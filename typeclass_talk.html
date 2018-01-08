@@ -227,7 +227,7 @@ class Bar t where
   bar a b = foo a $ \_ -> b
 
 instance Bar Maybe where
-    foo (Just a) f = Just $ f a
+    foo (Just a) f = f a
     foo Nothing _  = Nothing
 ```
 ]

@@ -478,20 +478,37 @@ Addition and multiplication over Integers.
 ## Examples
 ]
 .right-column[
-Many collection types will have semigroup instances.
+###Many collection types will have semigroup instances.
+
+```haskell
+data Maybe a = Nothing | Just a
+instance Semigroup a => Semigroup (Maybe a) where
+  Nothing <> b       = b
+  a       <> Nothing = a
+  Just a  <> Just b  = Just (a <> b)
+```
 
 ```haskell
 data Either e a = Left e | Right a
 instance Semigroup (Either e a) where
   Left _ <> b = b
   a      <> _ = a
+```
+]
 
-data Maybe a = Nothing | Just a
-instance Semigroup a => Semigroup (Maybe a) where
-  Nothing <> b       = b
-  a       <> Nothing = a
-  Just a  <> Just b  = Just (a <> b)
+---
 
+.left-column[
+# Semigroup
+## Laws
+## Examples
+]
+.right-column[
+###Many collection types will have semigroup instances.
+
+Sometimes semigroup reuses existing functions that describe specific semantics.
+
+```haskell
 data Map k a = Bin Int k a (Map k a) (Map k a) | Tip
 instance Ord k => Semigroup (Map k v) where
   (<>) = union

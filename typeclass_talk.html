@@ -211,8 +211,6 @@ restrictions and kinds.
 For extra kicks you can give typeclass members default definitions.
 
 ```haskell
--- t must be of kind * -> *
--- container types often have this kind.
 class Bar t where
   foo :: t a -> (a -> t b) -> t b
   bar :: t a -> t b -> t b
@@ -484,7 +482,7 @@ Many collection types will have semigroup instances.
 
 ```haskell
 data Either e a = Left e | Right a
-instance Semigroup (Either a b) where
+instance Semigroup (Either e a) where
   Left _ <> b = b
   a      <> _ = a
 
@@ -565,6 +563,12 @@ l' = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
 
 ---
 
+class: center, middle
+
+## Questions?
+
+---
+
 .left-column[
 # Monoid
 ]
@@ -610,8 +614,8 @@ Mathematically, all Monoids are semigroups and can be used where ever a
 semigroup is expected. This means they follow the same laws as semigroups.
 
 Sadly this is not the case in haskell today, as of GHC 8.2.1 semigroup uses the
-Monoid version of `<>` (called `mappend`) by default, and is not a superclass of Monoid.
-(But let's pretend that they are)
+Monoid version of `<>` (called `mappen`) by default, and is not a superclass of Monoid.
+(But let's pretend that they are, as GHC 8.4 should be fixing this)
 ]
 
 ---
@@ -804,6 +808,12 @@ The stronger the typeclass is, the more you can do with it, but your available i
 
 ---
 
+class: center, middle
+
+## Questions?
+
+---
+
 .left-column[
 # Foldable
 ]
@@ -896,6 +906,12 @@ on their stored value.
 
 ---
 
+class: center, middle
+
+## Questions?
+
+---
+
 .left-column[
 # Functor
 ]
@@ -965,10 +981,6 @@ class Functor [] where
 instance Functor (Either e) where
     fmap _ (Left x)  = Left x
     fmap f (Right y) = Right (f y)
-
--- Bonus for those who know Monad.
-instance Functor IO where
-  fmap f m = m >>= pure . f
 ```
 ]
 

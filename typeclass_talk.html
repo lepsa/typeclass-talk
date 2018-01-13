@@ -962,7 +962,7 @@ class Functor [] where
   fmap _ []     = []
   fmap f (x:xs) = f x : fmap f xs
 
-instance Functor (Either a) where
+instance Functor (Either e) where
     fmap _ (Left x)  = Left x
     fmap f (Right y) = Right (f y)
 
@@ -1014,7 +1014,7 @@ instance Functor Maybe where
 
 -- You can swap out Sum for First, Last, Product, etc
 instance Functor Sum where
-  fmap f s = Sum {getSum = f $ getSum s}
+fmap f s = Sum ( f $ getSum s )
 ```
 
 NonEmpty's instance is very similar to the instance for [], so much so that we can use it.
@@ -1050,7 +1050,7 @@ You can even use it to apply functions with multiple params
 (&) :: a -> (a -> b) -> b
 
 f a b c = a + b + c
-(3 &) <$> (2 &) <$> plus3 <$> Just 1  ==  Just 6
+(3 &) <$> (2 &) <$> f <$> Just 1  ==  Just 6
 
 g a b c = a <> b <> c
 ("2" &) <$> ("1" &) <$> g <$> ["A", "B", "C"]  ==
@@ -1080,8 +1080,7 @@ restrictions that otherwise works just like `fmap`.
 
 An interesting thing about Functors is that they do not have to be structure
 preserving, but often are. The above pseudo-functor for Set will drop duplicate
-values, possibly resulting in a smaller Set everytime you run `map`. This is
-called a forgetful functor.
+values, possibly resulting in a smaller Set everytime you run `map`.
 ]
 
 ---
@@ -1237,7 +1236,6 @@ We can simplify this even further using another function from Foldable.
 myFancyCounter :: (Monoid m, Foldable f) => f m -> (m -> m) -> m
 myFancyCounter v f = foldMap f v
 ```
-]
 
 And that is the power of Typeclasses in practice.
 ]

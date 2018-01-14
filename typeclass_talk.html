@@ -1004,42 +1004,13 @@ instance Functor (Either e) where
 
 .left-column[
 #Functor
-##Laws
-]
-.right-column[
-Like all good typeclasses, Functor must have some laws that we can use.
-```
-fmap id == id
-
-fmap (f . g) == fmap f . fmap g
-```
-
-So, what do these laws mean in practice?
-Well, if I run the identity function `\x -> x` over the elements of something,
-I should get the same values back.
-
-Additionally, if I run one function over the structure, then another it should be the
-same as doing both at the same time per element.
-
-This is basically the function composition law, but now we are applying it to values in a context.
-]
-
----
-
-.left-column[
-#Functor
-##Laws
 ##Examples
 ]
 .right-column[
-As shown earlier [], Either, are all relatively straight forward Functors.
+As shown earlier [], Maybe, and Either, are all relatively straight forward Functors.
 
-Much like the Foldable instances, Functor for Maybe, First, Last, Sum, Product will apply the function to the stored value, re-wrapping the result.
+Much like the Foldable instances, Functor for First, Last, Sum, Product will apply the function to the stored value, re-wrapping the result.
 ```haskell
-instance Functor Maybe where
-  fmap _ Nothing = Nothing
-  fmap f (Just a) = Just $ f a
-
 -- You can swap out Sum for First, Last, Product, etc
 instance Functor Sum where
 fmap f s = Sum ( f $ getSum s )
@@ -1058,7 +1029,6 @@ instance Functor NonEmpty where
 
 .left-column[
 #Functor
-##Laws
 ##Examples
 ]
 .right-column[
@@ -1092,7 +1062,6 @@ There are nicer ways of doing this that I'll cover in another talk.
 
 .left-column[
 #Functor
-##Laws
 ##Examples
 ##Pseudo Example
 ]
@@ -1109,6 +1078,32 @@ restrictions that otherwise works just like `fmap`.
 An interesting thing about Functors is that they do not have to be structure
 preserving, but often are. The above pseudo-functor for Set will drop duplicate
 values, possibly resulting in a smaller Set everytime you run `map`.
+]
+
+---
+
+.left-column[
+#Functor
+##Examples
+##Pseudo Example
+##Laws
+]
+.right-column[
+Like all good typeclasses, Functor must have some laws that we can use.
+```
+fmap id == id
+
+fmap (f . g) == fmap f . fmap g
+```
+
+So, what do these laws mean in practice?
+Well, if I run the identity function `\x -> x` over the elements of something,
+I should get the same values back.
+
+Additionally, if I run one function over the structure, then another it should be the
+same as doing both at the same time per element.
+
+This is basically the function composition law, but now we are applying it to values in a context.
 ]
 
 ---

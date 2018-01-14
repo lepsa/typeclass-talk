@@ -405,26 +405,6 @@ But it doesn't capture the most important part of the typeclass.
 The haskell class definition of a semigroup is all well and good.
 But it doesn't capture the most important part of the typeclass.
 
-Because with that definition I can do something like this
-```haskell
-instance Semigroup Integer where
-  (<>) :: Integer -> Integer -> Integer
-  -- Calculate the quotient of a and b
-  (<>) a b = quot a b
-```
-]
-
----
-
-.left-column[
-# Semigroup
-## Examples
-## Laws
-]
-.right-column[
-The haskell class definition of a semigroup is all well and good.
-But it doesn't capture the most important part of the typeclass.
-
 
 The one law that a semigroup must follow is the the function must be associative.
 ```
@@ -440,7 +420,7 @@ a <> (b <> c)  ==  (a <> b) <> c  ==  a <> b <> c
 ## Laws
 ]
 .right-column[
-If semigroup wasn't associative I could do something like this
+If semigroup wasn't associative I could do something like this.
 ```haskell
 instance Semigroup Integer where
   (<>) :: Integer -> Integer -> Integer
@@ -865,7 +845,7 @@ in order, collecting the results.
 The two basic folds that all others are built from are `foldl` and `foldr`.
 
 `foldl` can be thought of as summation or being a bit like a for-loop. `foldr` tends
-to be better thought of as being a type constructor replacing function, but both
+to be better thought of as being a type replacing function, but both
 work for either case.
 
 ```haskell
@@ -883,6 +863,23 @@ class Foldable t where
 
 .left-column[
 #Foldable
+##Examples
+]
+.right-column[
+[a] and NonEmpty are prime examples of a Foldable data structures, but not all
+Foldables have to store multiple or varying amounts of values.
+
+The folds for Maybe will return either z or the result of the function.
+
+Sum, Product, First, Last, and other similar types are all Foldable, operating
+on their stored value.
+]
+
+---
+
+.left-column[
+#Foldable
+##Examples
 ##Laws
 ]
 .right-column[
@@ -906,25 +903,8 @@ foldr f z l == 1 + (2 + (3 + z))
 
 .left-column[
 #Foldable
-##Laws
 ##Examples
-]
-.right-column[
-[a] and NonEmpty are prime examples of a Foldable data structures, but not all
-Foldables have to store multiple or varying amounts of values.
-
-The folds for Maybe will return either z or the result of the function.
-
-Sum, Product, First, Last, and other similar types are all Foldable, operating
-on their stored value.
-]
-
----
-
-.left-column[
-#Foldable
 ##Laws
-##Examples
 ##Further Reading
 ]
 .right-column[

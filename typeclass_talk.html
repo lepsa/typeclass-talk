@@ -1063,6 +1063,45 @@ There are nicer ways of doing this that I'll cover in another talk.
 .left-column[
 #Functor
 ##Examples
+]
+.right-column[
+Function composition allows us to take two functions, and make them into one.
+
+```haskell
+(.) :: (b -> c) -> (a -> b) -> (a -> c)
+(.) g f = \x -> g (f x)
+```
+]
+
+---
+
+.left-column[
+#Functor
+##Examples
+]
+.right-column[
+Function composition allows us to take two functions, and make them into one.
+
+```haskell
+(.) :: (b -> c) -> (a -> b) -> (a -> c)
+(.) g f = \x -> g (f x)
+```
+
+Because Functor is all about applying functions to values, we can use function composition to our advantage.
+
+```haskell
+g <$> f <$> [1, 2, 3] == g <$> [f 1, f 2, f 3] == [g (f 1), g (f 2), g (f 3)]
+
+g . f <$> [1, 2, 3] == [g (f 1), g (f 2), g (f 3)]
+```
+
+]
+
+---
+
+.left-column[
+#Functor
+##Examples
 ##Pseudo Example
 ]
 .right-column[
@@ -1074,6 +1113,10 @@ value.
 
 To work around this, Data.Set supplies a function `map` that has these
 restrictions that otherwise works just like `fmap`.
+
+```haskell
+map :: Ord b => (a -> b) -> Set a -> Set b
+```
 
 An interesting thing about Functors is that they do not have to be structure
 preserving, but often are. The above pseudo-functor for Set will drop duplicate

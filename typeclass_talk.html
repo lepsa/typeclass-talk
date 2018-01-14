@@ -289,163 +289,6 @@ class Semigroup a where
 
 .left-column[
 # Semigroup
-## Laws
-]
-.right-column[
-The haskell class definition of a semigroup is all well and good.
-But it doesn't capture the most important part of the typeclass.
-]
-
----
-
-.left-column[
-# Semigroup
-## Laws
-]
-.right-column[
-The haskell class definition of a semigroup is all well and good.
-But it doesn't capture the most important part of the typeclass.
-
-Because with that definition I can do something like this
-```haskell
-instance Semigroup Integer where
-  (<>) :: Integer -> Integer -> Integer
-  -- Calculate the quotient of a and b
-  (<>) a b = quot a b
-```
-]
-
----
-
-.left-column[
-# Semigroup
-## Laws
-]
-.right-column[
-The haskell class definition of a semigroup is all well and good.
-But it doesn't capture the most important part of the typeclass.
-
-Because with that definition I can do something like this
-```haskell
-instance Semigroup Integer where
-  (<>) :: Integer -> Integer -> Integer
-  -- Calculate the quotient of a and b
-  (<>) a b = quot a b
-```
-
-And that will compile, but there is an error lying in wait to catch us out.
-]
-
----
-
-.left-column[
-# Semigroup
-## Laws
-]
-.right-column[
-What happens if I run this snippet?
-```haskell
-(2 <> 3) <> 4
-```
-]
-
----
-
-.left-column[
-# Semigroup
-## Laws
-]
-.right-column[
-What happens if I run this snippet?
-```haskell
-(2 <> 3) <> 4  ==  0 <> 4  ==  0
-```
-]
-
----
-
-.left-column[
-# Semigroup
-## Laws
-]
-.right-column[
-What happens if I run this snippet?
-```haskell
-(2 <> 3) <> 4  ==  0 <> 4  ==  0
-```
-
-What about this one?
-```haskell
-2 <> (3 <> 4)
-```
-]
-
----
-
-.left-column[
-# Semigroup
-## Laws
-]
-.right-column[
-What happens if I run this snippet?
-```haskell
-(2 <> 3) <> 4  ==  0 <> 4  ==  0
-```
-
-What about this one?
-```haskell
-2 <> (3 <> 4)  ==  2 <> 0  ==  error "divide by zero"
-```
-]
-
----
-
-.left-column[
-# Semigroup
-## Laws
-]
-.right-column[
-What happens if I run this snippet?
-```haskell
-(2 <> 3) <> 4  ==  0 <> 4  ==  0
-```
-
-What about this one?
-```haskell
-2 <> (3 <> 4)  ==  2 <> 0  ==  error "divide by zero"
-```
-
-So the one law that a semigroup must follow is the the function must be associative.
-```
-a <> (b <> c)  ==  (a <> b) <> c  ==  a <> b <> c
-```
-]
-
----
-
-.left-column[
-# Semigroup
-## Laws
-]
-.right-column[
-Sadly Haskell doesn't have a built in way of enforcing these laws.
-
-That doesn't mean we have to give up all hope. We can write tests that check
-that the properties of the typeclass hold for arbitary given values.
-
-This usually goes by the name 'property testing'.
-
-Other languages take this further and make you prove that your code is
-correct.
-- Coq
-- Idris
-]
-
----
-
-.left-column[
-# Semigroup
-## Laws
 ## Examples
 ]
 .right-column[
@@ -467,14 +310,13 @@ Any False <> Any False  ==  Any False
 Any True <> Any False   ==  Any True
 ```
 
-Addition and multiplication over Integers.
+Addition and multiplication over numbers.
 ]
 
 ---
 
 .left-column[
 # Semigroup
-## Laws
 ## Examples
 ]
 .right-column[
@@ -500,7 +342,6 @@ instance Semigroup (Either e a) where
 
 .left-column[
 # Semigroup
-## Laws
 ## Examples
 ]
 .right-column[
@@ -510,6 +351,7 @@ Sometimes semigroup reuses existing functions that describe specific semantics.
 
 ```haskell
 data Map k a = Bin Int k a (Map k a) (Map k a) | Tip
+
 instance Ord k => Semigroup (Map k v) where
   (<>) = union
 
@@ -522,7 +364,6 @@ instance Semigroup (Vector a) where
 
 .left-column[
 # Semigroup
-## Laws
 ## Examples
 ]
 .right-column[
@@ -545,37 +386,195 @@ instance Semigroup (Last a) where
 
 .left-column[
 # Semigroup
-## Laws
 ## Examples
+## Laws
+]
+.right-column[
+The haskell class definition of a semigroup is all well and good.
+But it doesn't capture the most important part of the typeclass.
+]
+
+---
+
+.left-column[
+# Semigroup
+## Examples
+## Laws
+]
+.right-column[
+The haskell class definition of a semigroup is all well and good.
+But it doesn't capture the most important part of the typeclass.
+
+Because with that definition I can do something like this
+```haskell
+instance Semigroup Integer where
+  (<>) :: Integer -> Integer -> Integer
+  -- Calculate the quotient of a and b
+  (<>) a b = quot a b
+```
+]
+
+---
+
+.left-column[
+# Semigroup
+## Examples
+## Laws
+]
+.right-column[
+The haskell class definition of a semigroup is all well and good.
+But it doesn't capture the most important part of the typeclass.
+
+
+The one law that a semigroup must follow is the the function must be associative.
+```
+a <> (b <> c)  ==  (a <> b) <> c  ==  a <> b <> c
+```
+]
+
+---
+
+.left-column[
+# Semigroup
+## Examples
+## Laws
+]
+.right-column[
+If semigroup wasn't associative I could do something like this
+```haskell
+instance Semigroup Integer where
+  (<>) :: Integer -> Integer -> Integer
+  -- Calculate the quotient of a and b
+  (<>) a b = quot a b
+```
+
+And that will compile, but there is an error lying in wait to catch us out.
+]
+
+---
+
+.left-column[
+# Semigroup
+## Examples
+## Laws
+]
+.right-column[
+What happens if I run this snippet?
+```haskell
+(2 <> 3) <> 4
+```
+]
+
+---
+
+.left-column[
+# Semigroup
+## Examples
+## Laws
+]
+.right-column[
+What happens if I run this snippet?
+```haskell
+(2 <> 3) <> 4  ==  0 <> 4  ==  0
+```
+]
+
+---
+
+.left-column[
+# Semigroup
+## Examples
+## Laws
+]
+.right-column[
+What happens if I run this snippet?
+```haskell
+(2 <> 3) <> 4  ==  0 <> 4  ==  0
+```
+
+What about this one?
+```haskell
+2 <> (3 <> 4)
+```
+]
+
+---
+
+.left-column[
+# Semigroup
+## Examples
+## Laws
+]
+.right-column[
+What happens if I run this snippet?
+```haskell
+(2 <> 3) <> 4  ==  0 <> 4  ==  0
+```
+
+What about this one?
+```haskell
+2 <> (3 <> 4)  ==  2 <> 0  ==  error "divide by zero"
+```
+]
+
+---
+
+.left-column[
+# Semigroup
+## Examples
+## Laws
 ]
 .right-column[
 Because semigroups are associative, we can use them in all sorts of
-places and know that we are going to get the same answer back.
+places and know that we are going to get the same answer back without any
+unexpected surprises.
+]
 
+---
+
+.left-column[
+# Semigroup
+## Examples
+## Laws
+]
+.right-column[
 If I have some lists of data that I wanted to join together, I could send
 subsets of my data out to computers to concatenate, and collect their answers.
 So long as I keep the order of the responses, it doesn't matter in what order
 I combine the results in.
 
 ```haskell
-l   = [ [1, 2, 3]
-      , [4, 5, 6]
-      , [7, 8, 9]
-      , [10, 11, 12] 
-      ]
+l   = [ [1, 2, 3], [4, 5, 6], [7, 8, 9], [10, 11, 12] ]
 
-l1  = [ [1, 2, 3]
-      , [4, 5, 6]
-      ]
+l1  = [ [1, 2, 3], [4, 5, 6] ]
 l1' = [1, 2, 3, 4, 5, 6]
 
-l2  = [ [7, 8, 9]
-      , [10, 11, 12]
-      ]
+l2  = [ [7, 8, 9], [10, 11, 12] ]
 l2' = [7, 8, 9, 10, 11, 12]
 
 l' = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
 ```
+]
+
+---
+
+.left-column[
+# Semigroup
+## Examples
+## Laws
+]
+.right-column[
+Sadly Haskell doesn't have a built in way of enforcing these laws.
+
+That doesn't mean we have to give up all hope. We can write tests that check
+that the properties of the typeclass hold for arbitary given values.
+
+This usually goes by the name 'property testing'.
+
+Other languages take this further and make you prove that your code is
+correct.
+- Coq
+- Idris
 ]
 
 ---
@@ -946,10 +945,11 @@ They allow you to apply a function over values that have some context.
 Functors are an interesting and fundamental part of haskell programming.
 They allow you to apply a function over values that have some context.
 
-How would you apply a function to every item in a list?<br/>
-What about to an optional value?<br/>
+How would you apply a function to:<br/>
+Every item in a list?<br/>
+An optional value?<br/>
+One of two possible values?<br/>
 Trees of values?<br/>
-What about an IO action?
 ]
 
 ---
@@ -961,10 +961,10 @@ What about an IO action?
 .right-column[
 For each of these types you would probably end up with functions with types of
 ```haskell
-applyList  :: (a -> b) -> [] a    -> [] b
-applyMaybe :: (a -> b) -> Maybe a -> Maybe b
-applyTree  :: (a -> b) -> Tree a  -> Tree b
-applyIO    :: (a -> b) -> IO a    -> IO b
+applyList   :: (a -> b) -> [] a       -> [] b
+applyMaybe  :: (a -> b) -> Maybe a    -> Maybe b
+applyEither :: (a -> b) -> Either e a -> Either e b
+applyTree   :: (a -> b) -> Tree a     -> Tree b
 ```
 
 These all look very similar, all that we are doing is changing the data type holding our values.
@@ -995,9 +995,13 @@ class Functor [] where
   fmap _ []     = []
   fmap f (x:xs) = f x : fmap f xs
 
+instance Functor Maybe where
+  fmap _ Nothing  = Nothing
+  fmap f (Just a) = Just (f a)
+
 instance Functor (Either e) where
-    fmap _ (Left x)  = Left x
-    fmap f (Right y) = Right (f y)
+  fmap _ (Left x)  = Left x
+  fmap f (Right y) = Right (f y)
 ```
 ]
 
@@ -1033,7 +1037,7 @@ This is basically the function composition law, but now we are applying it to va
 ##Examples
 ]
 .right-column[
-As shown earlier [], Either, and IO are all relatively straight forward Functors.
+As shown earlier [], Either, are all relatively straight forward Functors.
 
 Much like the Foldable instances, Functor for Maybe, First, Last, Sum, Product will apply the function to the stored value, re-wrapping the result.
 ```haskell
@@ -1182,10 +1186,12 @@ If this sounds slow, boring, and error prone you would be correct.
 ## Easy Wins
 ]
 .right-column[
-In this case we can easily remove applyFunction, and replace it with a functor!
+In this case we can easily remove applyFunction and replace it with a functor,
+and the list pattern match with a fold.
 
 ```haskell
-myFancyCounter :: Functor f => f Int -> (Int -> Int) -> Int
+myFancyCounter :: Functor f =>
+  f Int -> (Int -> Int) -> Int
 myFancyCounter v f = sumValues $ fmap f v
 
 sumValues :: Vector Int -> Int
@@ -1212,7 +1218,8 @@ Now we need to remember if we used any special values anywhere and change those.
 
 If we change out the Integer type to be a Monoid we can capture all those requirements in one nice place.
 ```haskell
-myFancyCounter :: (Monoid m, Functor f) => f m -> (m -> m) -> m
+myFancyCounter :: (Monoid m, Functor f) =>
+  f m -> (m -> m) -> m
 myFancyCounter v f = sumValues $ fmap f v
 
 sumValues :: Monoid m => Vector m -> m
@@ -1262,7 +1269,8 @@ Now if we want to change the data type that our app uses, it is all in one place
 We can simplify this even further using another function from Foldable.
 
 ```haskell
-myFancyCounter :: (Monoid m, Foldable f) => f m -> (m -> m) -> m
+myFancyCounter :: (Monoid m, Foldable f) =>
+  f m -> (m -> m) -> m
 myFancyCounter v f = foldMap f v
 ```
 

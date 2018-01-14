@@ -611,61 +611,7 @@ class Semigroup a => Monoid a where
 ---
 
 .left-column[
-# Monoid
-## Laws
-]
-.right-column[
-Mathematically, all Monoids are semigroups and can be used where ever a
-semigroup is expected. This means they follow the same laws as semigroups.
-]
-
----
-
-.left-column[
-# Monoid
-## Laws
-]
-.right-column[
-Mathematically, all Monoids are semigroups and can be used where ever a
-semigroup is expected. This means they follow the same laws as semigroups.
-
-Sadly this is not the case in haskell today, as of GHC 8.2.1 semigroup uses the
-Monoid version of `<>` (called `mappen`) by default, and is not a superclass of Monoid.
-(But let's pretend that they are, as GHC 8.4 should be fixing this)
-]
-
----
-
-.left-column[
   # Monoid
-  ## Laws
-]
-.right-column[
-Since monoids are semigroups, their append / concat function must be associative.
-But they also have this `mempty` value that can be used, so what laws does it follow?
-]
-
----
-
-.left-column[
-  # Monoid
-  ## Laws
-]
-.right-column[
-Since monoids are semigroups, their append / concat function must be associative.
-But they also have this `mempty` value that can be used, so what laws does it follow?
-
-```haskell
-mempty <> a  ==  a <> mempty  ==  a
-```
-So the function must, in addition to being associative, have an identity element, which we call `mempty`.
-]
-
----
-
-.left-column[
-  # Monoid
-  ## Laws
   ## Examples
 ]
 .right-column[
@@ -683,7 +629,6 @@ List forms a monoid with the empty list as its mempty values.
 
 .left-column[
   # Monoid
-  ## Laws
   ## Examples
 ]
 .right-column[
@@ -693,15 +638,15 @@ List forms a monoid with the empty list as its mempty values.
 newtype Sum a = Sum { getSum :: a }
 
 instance Num a => Semigroup (Sum a) where
-  (<>) a b = Sum $ getSum a +  getSum b
+  (<>) a b = Sum $ getSum a + getSum b
 
 instance Num a => Monoid (Sum a) where
   mempty = Sum 0
 
 Sum 0 <> Sum 1 <> Sum 2 <> Sum 0  ==  Sum 3
+```
 
-
-
+```haskell
 newtype Product a = Product { getProduct :: a }
 
 instance Num a => Semigroup (Product a) where
@@ -719,7 +664,6 @@ Product 1 <> Product 2 <> Product 3 <> Product 1
 
 .left-column[
   # Monoid
-  ## Laws
   ## Examples
 ]
 .right-column[
@@ -730,7 +674,6 @@ Product 1 <> Product 2 <> Product 3 <> Product 1
 
 .left-column[
   # Monoid
-  ## Laws
   ## Examples
 ]
 .right-column[
@@ -744,7 +687,6 @@ Monoids are an excellent data structure to use when your computation has some
 
 .left-column[
   # Monoid
-  ## Laws
   ## Examples
 ]
 .right-column[
@@ -766,7 +708,6 @@ missing data.
 
 .left-column[
   # Monoid
-  ## Laws
   ## Examples
   ## Non-Example
 ]
@@ -778,7 +719,6 @@ missing data.
 
 .left-column[
   # Monoid
-  ## Laws
   ## Examples
   ## Non-Example
 ]
@@ -796,7 +736,6 @@ data NonEmpty a = a :| [a]
 
 .left-column[
   # Monoid
-  ## Laws
   ## Examples
   ## Non-Example
 ]
@@ -820,6 +759,82 @@ instance Monoid (NonEmpty a) where
 ```
 
 The stronger the typeclass is, the more you can do with it, but your available instances begin to dwindle.
+]
+
+---
+
+.left-column[
+# Monoid
+## Examples
+## Non-Example
+## Laws
+]
+.right-column[
+Mathematically, all Monoids are semigroups and can be used where ever a
+semigroup is expected. This means they follow the same laws as semigroups.
+]
+
+---
+
+.left-column[
+# Monoid
+## Examples
+## Non-Example
+## Laws
+]
+.right-column[
+Mathematically, all Monoids are semigroups and can be used where ever a
+semigroup is expected. This means they follow the same laws as semigroups.
+
+Sadly this is not the case in haskell today, as of GHC 8.2.1 semigroup uses the
+Monoid version of `<>` (called `mappend`) by default, and is not a superclass of Monoid.
+
+(But let's pretend that they are, GHC 8.4 will be fix this)
+]
+
+---
+
+.left-column[
+  # Monoid
+  ## Examples
+  ## Non-Example
+  ## Laws
+]
+.right-column[
+Since monoids are semigroups, their append / concat function must be associative.
+But they also have this `mempty` value that can be used, so what laws does it follow?
+]
+
+---
+
+.left-column[
+  # Monoid
+  ## Examples
+  ## Non-Example
+  ## Laws
+]
+.right-column[
+Since monoids are semigroups, their append / concat function must be associative.
+But they also have this `mempty` value that can be used, so what laws does it follow?
+]
+
+---
+
+.left-column[
+  # Monoid
+  ## Examples
+  ## Non-Example
+  ## Laws
+]
+.right-column[
+Since monoids are semigroups, their append / concat function must be associative.
+But they also have this `mempty` value that can be used, so what laws does it follow?
+
+The function must, in addition to being associative, have an identity element.
+
+```
+mempty <> a  ==  a <> mempty  ==  a
+```
 ]
 
 ---

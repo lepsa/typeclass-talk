@@ -1037,10 +1037,9 @@ A trivial application of Functor would be something like this.
 (+ 1) <$> [1, 2, 3]  ==  [2, 3, 4]
 ```
 
-You can use functor to build functions.
+You can use functor to build functions, thanks to currying.
 ```haskell
 (+) <$> Just 1  ==  Just (+ 1)
-
 ```
 
 You can even use it to apply functions with multiple params
@@ -1049,13 +1048,8 @@ You can even use it to apply functions with multiple params
 
 f a b c = a + b + c
 (3 &) <$> (2 &) <$> f <$> Just 1  ==  Just 6
-
-g a b c = a <> b <> c
-("2" &) <$> ("1" &) <$> g <$> ["A", "B", "C"]  ==
-  ["A12", "B12", "C12"]
 ```
 
-There are nicer ways of doing this that I'll cover in another talk.
 ]
 
 ---
